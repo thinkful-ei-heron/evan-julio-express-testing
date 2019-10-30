@@ -24,12 +24,14 @@ describe('GET /apps', () => {
         );
       });
   });
+  
   it('should be 400 if sort is incorrect', () => {
     return supertest(app)
       .get('/apps')
       .query({ sort: 'MISTAKE' })
       .expect(400, 'Sort must be one of App title or Rating');
   });
+
   it('should sort by title', () => {
     return supertest(app)
       .get('/apps')
@@ -87,6 +89,7 @@ describe('GET /apps', () => {
         expect(sorted).to.be.true;
       });
   });
+
   it('should return 400 if genre incorrect', () => {
     return supertest(app)
       .get('/apps')
@@ -95,5 +98,23 @@ describe('GET /apps', () => {
         400,
         'Genre must be Action, Puzzle, Strategy, Casual, Arcade, Card'
       );
+  });
+
+  it('should filter and return correct genre', () => {
+    return supertest(app)
+      .get('/apps')
+      .query({ genre: 'Arcade' })
+      .expect(200)
+      .expect('Content-Type', /json/)
+      .then(res => {
+        expect(res.body).to.be.an('array');
+        let correct = true;
+        res.body.forEach(app => {
+          if(!app.Genres.toLowerCase().includes('arcade')) {
+            correct = false;
+          }
+        });
+        expect(correct).to.be.true;
+      });
   });
 });
