@@ -12,7 +12,7 @@ describe('GET /apps', () => {
         expect(res.body).to.be.an('array');
         expect(res.body).to.have.lengthOf.at.least(1);
         const app = res.body[0];
-        expect(app).to.include.all.keys(
+        expect(app).to.include.all.keys([
           'App',
           'Category',
           'Reviews',
@@ -20,11 +20,11 @@ describe('GET /apps', () => {
           'Installs',
           'Type',
           'Price',
-          'Genres'
-        );
+          'Genres',
+        ]);
       });
   });
-  
+
   it('should be 400 if sort is incorrect', () => {
     return supertest(app)
       .get('/apps')
@@ -96,7 +96,7 @@ describe('GET /apps', () => {
       .query({ genre: 'MISTAKE' })
       .expect(
         400,
-        'Genre must be Action, Puzzle, Strategy, Casual, Arcade, Card'
+        'Genre must be Action, Puzzle, Strategy, Casual, Arcade, Card',
       );
   });
 
@@ -106,11 +106,11 @@ describe('GET /apps', () => {
       .query({ genre: 'Arcade' })
       .expect(200)
       .expect('Content-Type', /json/)
-      .then(res => {
+      .then((res) => {
         expect(res.body).to.be.an('array');
         let correct = true;
-        res.body.forEach(app => {
-          if(!app.Genres.toLowerCase().includes('arcade')) {
+        res.body.forEach((app) => {
+          if (!app.Genres.toLowerCase().includes('arcade')) {
             correct = false;
           }
         });
